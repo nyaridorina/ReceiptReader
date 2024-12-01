@@ -1,37 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Költések</title>
+    <title>Költések Feltöltése és Elemzése</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/chart.js"></script>
 </head>
 <body>
-    <h1>Költések feltöltése és elemzése</h1>
+    <h1>Költések Feltöltése és Elemzése</h1>
+    
     <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*" required>
+        <label for="file">Blokk feltöltése:</label><br>
+        <input type="file" id="file" name="file" accept="image/*" required>
         <button type="submit">Feltöltés</button>
     </form>
 
     <h2>Elemzés</h2>
-    <canvas id="spendingChart"></canvas>
+    <div>
+        <canvas id="spendingChart"></canvas>
+    </div>
 
-    <script>
-        const data = {{ data | safe }};
-        const labels = data.map(row => row[0]);
-        const prices = data.map(row => row[1]);
-
-        const ctx = document.getElementById('spendingChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Költések (Ft)',
-                    data: prices,
-                }]
-            }
-        });
-    </script>
+    <!-- A backendből érkező adatokat itt adjuk át a JavaScriptnek -->
+    <script id="chart-data" type="application/json">{{ data | tojson | safe }}</script>
 </body>
 </html>
