@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Költések Feltöltése és Elemzése</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Ensure the static path matches your project -->
     <script src="/static/chart.js"></script>
 </head>
 <body>
@@ -21,7 +22,9 @@
         <canvas id="spendingChart"></canvas>
     </div>
 
-    <!-- A backendből érkező adatokat itt adjuk át a JavaScriptnek -->
-    <script id="chart-data" type="application/json">{{ data | tojson | safe }}</script>
+    <!-- Backend data passed as JSON -->
+    <script id="chart-data" type="application/json">
+        {{ data | tojson | safe }}
+    </script>
 </body>
 </html>
