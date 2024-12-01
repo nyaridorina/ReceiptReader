@@ -9,6 +9,10 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# Ensure uploads folder exists
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
 # Initialize the database
 def init_db():
     conn = sqlite3.connect('db.sqlite')
@@ -29,8 +33,31 @@ init_db()  # Ensure table is created
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        # File upload logic here...
-        pass
+        # Handle file upload
+        file = request.files['file']
+        if file and file.filename:
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            file.save(filepath)
+
+            # Process the image with Tesseract OCR
+            text = pytesseract.image_to_string(Image.open(filepath))
+            lines = text.splitlines()
+
+            # Insert recognized data into the database
+            conn = sqlite3.connect('db.sqlite')
+            c = conn.cursor()
+            for line in lines:
+                parts = line.split()
+                if len(parts) > 1:
+                    item = ' '.join(parts[:-1])
+                    try:
+                        price = float(parts[-1].replace('Ft', '').replace(',', '.'))
+                        c.execute("INSERT INTO transactions (date, item, price) VALUES (date('now'), ?, ?)", (item, price))
+                    except ValueError:
+                        continue
+            conn.commit()
+            conn.close()
+            return redirect(url_for('index'))
 
     # Query data for the chart
     conn = sqlite3.connect('db.sqlite')
@@ -42,4 +69,6 @@ def index():
     return render_template('index.html', data=data)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    import os
+    port = int(os.environ.get("PORT", 5000))  # Use Render's PORT variable
+    app.run(host='0.0.0.0', port=port)
