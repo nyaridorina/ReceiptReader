@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Költések</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Költések feltöltése és elemzése</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required>
+        <button type="submit">Feltöltés</button>
+    </form>
+
+    <h2>Elemzés</h2>
+    <canvas id="spendingChart"></canvas>
+
+    <script>
+        const data = {{ data | safe }};
+        const labels = data.map(row => row[0]);
+        const prices = data.map(row => row[1]);
+
+        const ctx = document.getElementById('spendingChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Költések (Ft)',
+                    data: prices,
+                }]
+            }
+        });
+    </script>
+</body>
+</html>
