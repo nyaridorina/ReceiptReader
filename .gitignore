@@ -2,9 +2,16 @@
 __pycache__/
 *.pyc
 *.pyo
+*.env
 
 # SQLite database
 db.sqlite
 
-# Uploaded images
+# Uploaded files
 uploads/
+
+# Log files
+*.log
+
+# Render-related cache
+*.render-build
