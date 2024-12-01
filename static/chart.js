@@ -1,9 +1,7 @@
-// Adatok a backendről (ezeket a backend injektálja az index.html-ben)
 const data = JSON.parse(document.getElementById('chart-data').textContent);
-const labels = data.map(row => row[0]); // Tételek neve
-const prices = data.map(row => row[1]); // Összeg
+const labels = data.map(row => row[0]); // Item names
+const prices = data.map(row => row[1]); // Prices
 
-// Chart.js beállítása
 const ctx = document.getElementById('spendingChart').getContext('2d');
 new Chart(ctx, {
     type: 'bar',
@@ -21,17 +19,7 @@ new Chart(ctx, {
         responsive: true,
         scales: {
             y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Összeg (Ft)'
-                }
-            },
-            x: {
-                title: {
-                    display: true,
-                    text: 'Tételek'
-                }
+                beginAtZero: true
             }
         }
     }
